@@ -2,22 +2,37 @@
 import config
 import dataloader
 import models
+import models32
 
 # Pytorch libraries
 import torch
 import torch.backends.cudnn as cudnn
 
+# Other lib.
 import os
 import time
-
-if config.use_wandb == True:
-    import wandb
+import wandb
 
 
 def get_model():
-
     # Get model from config
-    if config.model == "resnet18":
+    # image size: 32x32
+    # -------------------------------------------- #
+    if config.model == "resnet20":
+        model = models32.resnet20()
+    elif config.model == "resnet32":
+        model = models32.resnet32()
+    elif config.model == "resnet44":
+        model = models32.resnet44()
+    elif config.model == "resnet56":
+        model = models32.resnet56()
+    elif config.model == "resnet110":
+        model = models32.resnet110()
+    elif config.model == "resnet1202":
+        model = models32.resnet1202()
+    # image size: 224x224
+    # -------------------------------------------- #
+    elif config.model == "resnet18":
         model = models.resnet18(pretrained=config.pretrained)
     elif config.model == "resnet34":
         model = models.resnet34(pretrained=config.pretrained)
@@ -39,8 +54,8 @@ def get_model():
         raise ValueError('%s not supported'.format(config.model))
 
     # Initialize fc layer
-    (in_features, out_features) = model.fc.in_features, model.fc.out_features
-    model.fc = torch.nn.Linear(in_features, out_features)
+    model.fc = torch.nn.Linear(in_features=model.fc.in_features,
+                               out_features=config.out_features)
     return model
 
 
@@ -54,14 +69,8 @@ def scheduler(epoch: int):
 
 
 def save_checkpoint(state, filename='checkpoint.pth.tar'):
-    if config.use_wandb == True:
-        torch.save(state, filename)
-        wandb.save(filename)
+    torch.save(state, config.drive_dir + filename)
 
-def save_weights(epoch):
-        print('| Saving Weights ...', end="\r")
-        save_point = drive_dir + '/checkpoint/' + config.checkpoint + '_' + str(epoch) + '.pth.tar'
-        save_checkpoint({'state_dict': net.state_dict(), }, save_point)
 
 # Training
 def train(epoch):
@@ -92,7 +101,7 @@ def train(epoch):
                                      step + 1,
                                      len(train_loader.dataset) // config.batch_size + 1,
                                      loss.data.item(),
-                                     100. * correct / total,
+                                     float(correct) / float(total),
                                      time.time() - init_time),
               end="\r")
 
@@ -115,7 +124,7 @@ def valid(epoch):
         correct += predicted.eq(targets.data).cpu().sum()
 
     # Grab validation results
-    valid_acc = 100. * correct / total
+    valid_acc = float(correct) / float(total)
     valid_results = ("| Epoch: {}/{}, val_loss: {:.3f}, val_acc: {:.3f}, "
                      "lr: {:.6f}".format(epoch,
                                          config.num_epochs,
@@ -126,15 +135,16 @@ def valid(epoch):
     record.flush()
 
     print(valid_results)
-    if config.use_wandb == True:
-        wandb.log({'epoch': epoch, 'accy_val' : valid_results })
+    # wandb.log({'epoch': epoch, 'accy_val': valid_results})
+
     # Save checkpoint when best model
     if valid_acc > best_acc:
         best_acc = valid_acc
         print('| Saving Best Model ...', end="\r")
-        save_point = drive_dir + '/checkpoint/' + str(config.checkpoint) + '%s.pth.tar'
-        save_checkpoint({'state_dict': net.state_dict(), }, save_point)
-
+        save_checkpoint(
+            state={'state_dict': net.state_dict(), },
+            filename='/checkpoint/%s_r%d.pth.tar' % (
+                config.baseline_id, 100 * config.r))
 
 
 def test():
@@ -155,23 +165,22 @@ def test():
         correct += predicted.eq(targets.data).cpu().sum()
 
     # Grab validation results
-    test_acc = 100. * correct/total
+    test_acc = float(correct) / float(total)
     test_results = "| test_loss: {:.3f}, test_acc: {:.3f}".format(
         loss.data.item(), test_acc)
     record.write(test_results)
     record.flush()
 
     print(test_results)
-    if config.use_wandb == True:
-        wandb.log({'test_acc' : test_acc })
+    # wandb.log({'test_acc': test_acc})
 
 
 if __name__ == '__main__':
 
     # Checkpoint dir.
     # os.mkdir('checkpoint')
-    record = open(config.drive_dir + '/checkpoint/' + config.checkpoint + '_test.txt', 'w')
-    record.write('noise_rate=%s\n' % config.noise_rate)
+    record = open(config.drive_dir + '/checkpoint/%s_r%d.txt' % (
+        config.baseline_id, 100 * config.r), 'w')
     record.flush()
 
     # Get the original_dataset
@@ -186,8 +195,10 @@ if __name__ == '__main__':
     # Networks setup
     print('\nModel setup')
     print('| Building network: {}'.format(config.model))
-    net = get_model()
-    test_net = get_model()
+    # net = get_model()
+    # test_net = get_model()
+    net = models32.ResNet18()
+    test_net = models32.ResNet18()
 
     if use_cuda:
         net.cuda()
@@ -198,8 +209,10 @@ if __name__ == '__main__':
     criterion = torch.nn.CrossEntropyLoss()
 
     # Instantiate an optimizer to train the model.
-    optimizer = torch.optim.SGD(
-        net.parameters(), lr=config.lr, momentum=0.9, weight_decay=0.0)
+    optimizer = torch.optim.SGD(net.parameters(),
+                                lr=config.lr,
+                                momentum=config.momentum,
+                                weight_decay=config.weight_decay)
 
     print('\nTraining model')
     print('| Training Epochs = ' + str(config.num_epochs))
@@ -210,11 +223,14 @@ if __name__ == '__main__':
     for epoch in range(1, 1 + config.num_epochs):
         train(epoch)
         valid(epoch)
-        save_weights(epoch)
-
 
     print('\nTesting model')
-
-    checkpoint = torch.load(config.drive_dir + '/checkpoint/' + config.checkpoint + '_test.txt')
+    checkpoint = torch.load(
+        config.drive_dir + '/checkpoint/%s_r%d.pth.tar' % (
+            config.baseline_id, 100 * config.r))
     test_net.load_state_dict(checkpoint['state_dict'])
     test()
+
+
+
+
