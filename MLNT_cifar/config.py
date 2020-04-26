@@ -9,12 +9,12 @@ pretrained = True
 seed = 7
 lr = 0.0008
 optimizer_type = 'SGD'
-checkpoint = 'cross_entropy_r50_dataloader_defaultparam'
-noise_rate = 0.5
+checkpoint = 'cross_entropy_r10_dataloader_defaultparam'
+noise_rate = 0.1
 
 # Hyper-params. (main)
 # -------------------------------------------- #
-id = 'MLNT_r50_dataloader_defaultparam'
+id = 'MLNT_r10_dataloader_defaultparam'
 meta_lr = 0.02  # meta learning_rate
 num_fast = 10  # number of random perturbations
 perturb_ratio = 0.5  # ratio of random perturbations
@@ -36,7 +36,6 @@ crop = 0
 drive_dir = '/content/drive/My Drive/Colab_Notebooks/pfm' #si es llenà¸£à¸‡a en local deixar en blanc ""
 data_dir = '/content/drive/My Drive/Colab_Notebooks/pfm/data/'
 
-
 #----------------------------------------------#
 #Dataloader files
 train_file = 'noisy_label_kv.txt'
@@ -55,22 +54,21 @@ model = "resnet50"
 # model = wide_resnet101_2
 
 # Record parameters to wandb
-use_wandb = False
+use_wandb = True
 
-
-
-#Generate noise
+#GENERATE NOISE FILES
 generate_file = True
-
+noise_validation = True
 
 
 import noise_generator
 N_CLASSES = 10 #Depends on the dataset (10 for cifar)s
 symmetric = True
 train_file_name = 'noisy_label_kv.txt'
+test_file_name =  'test_with_noisy_label_validation_kv.txt'
 
 if generate_file == True:
-    noise_generator.generate_noise(noise_rate,symmetric, data_dir, train_file_name )
+    noise_generator.generate_noise(noise_rate,symmetric, data_dir, train_file_name, noise_validation, test_file_name)
 
 
 
