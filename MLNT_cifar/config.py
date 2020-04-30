@@ -9,7 +9,7 @@ pretrained = True
 seed = 7
 lr = 0.0008
 optimizer_type = 'SGD'
-checkpoint = 'cross_entropy_r10_dataloader_defaultparam'
+checkpoint = 'cross_entropy_test'
 noise_rate = 0.1
 
 # Hyper-params. (main)
@@ -33,8 +33,8 @@ crop = 0
 
 #drive_dir = '.'
 #data_dir = './data/'
-drive_dir = '/content/drive/My Drive/Colab_Notebooks/pfm' #si es llenà¸£à¸‡a en local deixar en blanc ""
-data_dir = '/content/drive/My Drive/Colab_Notebooks/pfm/data/'
+drive_dir = '' #si es llenà¸£à¸‡a en local deixar en blanc ""
+data_dir = '/data/'
 
 #----------------------------------------------#
 #Dataloader files
@@ -45,7 +45,7 @@ valid_test_file = 'clean_label_kv.txt'
 # -------------------------------------------- #
 # model = "resnet18"
 # model = "resnet34"
-model = "resnet50"
+model = "resnet34"
 # model = "resnet101"
 # model = "resnet152"
 # model = resnext50_32x4d
@@ -54,10 +54,10 @@ model = "resnet50"
 # model = wide_resnet101_2
 
 # Record parameters to wandb
-use_wandb = True
+use_wandb = False
 
 #GENERATE NOISE FILES
-generate_file = True
+generate_file = False
 noise_validation = True
 
 

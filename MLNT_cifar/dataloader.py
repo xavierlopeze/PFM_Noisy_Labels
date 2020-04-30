@@ -14,36 +14,36 @@ class KeyDataset(Dataset):
         self.test_labels = {}
         self.transform = transform
         self.mode = mode
-        with open(config.drive_dir + '/data/clean_train_key_list.txt', 'r') as f:
+        with open(config.data_dir + 'clean_train_key_list.txt', 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
-            img_path = config.drive_dir + '/data/' + l[7:]
+            img_path = config.data_dir + l[7:]
             self.train_imgs.append(img_path)
 
-        with open(config.drive_dir + '/data/clean_test_key_list.txt', 'r') as f:
+        with open(config.data_dir + 'clean_test_key_list.txt', 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
-            img_path = config.drive_dir + '/data/' + l[7:]
+            img_path = config.data_dir + l[7:]
             self.test_imgs.append(img_path)
 
-        with open(config.drive_dir + '/data/clean_val_key_list.txt', 'r') as f:
+        with open(config.data_dir + 'clean_val_key_list.txt', 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
-            img_path = config.drive_dir + '/data/' + l[7:]
+            img_path = config.data_dir + l[7:]
             self.valid_imgs.append(img_path)
 
-        with open(config.drive_dir + '/data/noisy_label_kv.txt', 'r') as f:
+        with open(config.data_dir + 'noisy_label_kv.txt', 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
             entry = l.split()
-            img_path = config.drive_dir + '/data/' + entry[0][7:]
+            img_path = config.data_dir + entry[0][7:]
             self.train_labels[img_path] = int(entry[1])
 
-        with open(config.drive_dir + '/data/clean_label_kv.txt', 'r') as f:
+        with open(config.data_dir + 'clean_label_kv.txt', 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
             entry = l.split()
-            img_path = config.drive_dir + '/data/' + entry[0][7:]
+            img_path = config.data_dir + entry[0][7:]
             self.test_labels[img_path] = int(entry[1])
 
     def __getitem__(self, index):
@@ -76,14 +76,16 @@ class KeyDataLoader(object):
     def __init__(self):
 
         self.transform_train = transforms.Compose([
-            transforms.RandomCrop(32, padding=4),
+            transforms.RandomCrop(config.image_size, config.crop),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
-            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+            transforms.Normalize((0.4914, 0.4822, 0.4465),(0.2023, 0.1994, 0.2010)),
+
         ])
+
         self.transform_test = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+            transforms.Normalize((0.4914, 0.4822, 0.4465),(0.2023, 0.1994, 0.2010)),
         ])
 
     def run(self):
