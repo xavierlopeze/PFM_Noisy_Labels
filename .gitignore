@@ -1,0 +1,4 @@
+*.pyc
+MLNT_cifar/data
+MLNT_cifar/checkpoint
+MLNT_cifar/.ipynb_checkpoints
