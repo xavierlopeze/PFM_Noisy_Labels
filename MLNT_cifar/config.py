@@ -75,7 +75,7 @@ symmetric = True
 train_file_name = 'noisy_label_kv.txt'
 test_file_name =  'noisy_label_validation.txt' #never name this 'clean_label_kv.txt'
 
-if noise_validation = True:
+if noise_validation == True:
     test_validation_file = test_file_name
 
 if generate_file == True:
