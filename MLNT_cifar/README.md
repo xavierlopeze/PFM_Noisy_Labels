@@ -4,7 +4,7 @@ This code is an unofficial adapation of the *Meta-Learning based Noise-Tolerant 
 
 **Learning to Learn from Noisy Labeled Data**
  <a href="https://arxiv.org/pdf/1812.05214.pdf">[pdf]</a>
-  <a href="https://github.com/LiJunnan1992/MLNT/blob/master/README.md">[original code github]</a>  
+  <a href="https://github.com/LiJunnan1992/MLNT">[original code github]</a>  
 Junnan Li, Y. Wong, Qi Zhao, M. Kankanhalli
 To use the code, please cite our paper.
 
