@@ -1,20 +1,22 @@
 # Hyper-params. (baseline)
 # -------------------------------------------- #
 num_workers = 10
-start_epoch = 1
-num_epochs = 100
-batch_size = 30
+start_epoch = 80
+num_epochs = 120
+batch_size = 128
 shuffle = True
-pretrained = True
+pretrained = False
 seed = 7
-lr = 0.0008
+lr = 0.2
 optimizer_type = 'SGD'
-checkpoint = 'cross_entropy_test'
-noise_rate = 0.1
+checkpoint = 'cross_entropy_r50_ResNet34_BasicBlock'
+noise_rate = 0.5
+momentum = 0.9
+weight_decay = 0.0001
 
 # Hyper-params. (main)
 # -------------------------------------------- #
-id = 'MLNT_r10_dataloader_defaultparam'
+id = 'MLNT_r50_ResNet34_BasicBlock'
 meta_lr = 0.02  # meta learning_rate
 num_fast = 10  # number of random perturbations
 perturb_ratio = 0.5  # ratio of random perturbations
@@ -26,15 +28,15 @@ gpuid = 1
 
 # Image pre-processing
 # -------------------------------------------- #
-image_size = 256
-crop = 0
+image_size = 32
+crop = 4
 
 # -------------------------------------------- #
 
 #drive_dir = '.'
 #data_dir = './data/'
-drive_dir = '' #si es llenà¸£à¸‡a en local deixar en blanc ""
-data_dir = '/data/'
+drive_dir = '/content/drive/My Drive/Colab_Notebooks/git/PFM_Noisy_Labels/MLNT_cifar'
+data_dir =  '/content/drive/My Drive/Colab_Notebooks/git/PFM_Noisy_Labels/MLNT_cifar/data/'#'/data/'
 
 #----------------------------------------------#
 #Dataloader files
@@ -54,23 +56,30 @@ model = "resnet34"
 # model = wide_resnet101_2
 
 # Record parameters to wandb
-use_wandb = False
+use_wandb = True
+
+
+#Label FILES
+train_labels_file = 'noisy_label_kv.txt'
+test_validation_labels_file = 'clean_label_kv.txt'
+
 
 #GENERATE NOISE FILES
 generate_file = False
-noise_validation = True
+noise_validation = False
 
 
 import noise_generator
 N_CLASSES = 10 #Depends on the dataset (10 for cifar)s
 symmetric = True
 train_file_name = 'noisy_label_kv.txt'
-test_file_name =  'test_with_noisy_label_validation_kv.txt'
+test_file_name =  'noisy_label_validation.txt' #never name this 'clean_label_kv.txt'
+
+if noise_validation = True:
+    test_validation_file = test_file_name
 
 if generate_file == True:
     noise_generator.generate_noise(noise_rate,symmetric, data_dir, train_file_name, noise_validation, test_file_name)
-
-
 
 
 if use_wandb== True:

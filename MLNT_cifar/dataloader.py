@@ -32,14 +32,14 @@ class KeyDataset(Dataset):
             img_path = config.data_dir + l[7:]
             self.valid_imgs.append(img_path)
 
-        with open(config.data_dir + 'noisy_label_kv.txt', 'r') as f:
+        with open(config.data_dir + config.train_labels_file, 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
             entry = l.split()
             img_path = config.data_dir + entry[0][7:]
             self.train_labels[img_path] = int(entry[1])
 
-        with open(config.data_dir + 'clean_label_kv.txt', 'r') as f:
+        with open(config.data_dir + config.test_validation_labels_file, 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
             entry = l.split()
