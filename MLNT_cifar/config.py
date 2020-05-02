@@ -65,7 +65,7 @@ test_validation_labels_file = 'clean_label_kv.txt'
 
 
 #GENERATE NOISE FILES
-generate_file = False
+generate_file = True
 noise_validation = False
 
 
