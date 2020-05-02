@@ -17,14 +17,15 @@ weight_decay = 0.0001
 # Hyper-params. (main)
 # -------------------------------------------- #
 id = 'MLNT_r50_ResNet34_BasicBlock'
-meta_lr = 0.02  # meta learning_rate
+meta_lr = 0.4  # meta learning_rate
 num_fast = 10  # number of random perturbations
 perturb_ratio = 0.5  # ratio of random perturbations
 start_iter = 500
 mid_iter = 2000
-alpha = 1
+alpha = 0.2
 eps = 0.99  # Running average of model weights
 gpuid = 1
+param_epoch = 20
 
 # Image pre-processing
 # -------------------------------------------- #
