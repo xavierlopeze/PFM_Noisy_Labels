@@ -77,7 +77,7 @@ train_file_name = 'noisy_label_kv.txt'
 test_file_name =  'noisy_label_validation.txt' #never name this 'clean_label_kv.txt'
 
 if noise_validation == True:
-    test_validation_file = test_file_name
+    test_validation_labels_file = test_file_name
 
 if generate_file == True:
     noise_generator.generate_noise(noise_rate,symmetric, data_dir, train_file_name, noise_validation, test_file_name)
