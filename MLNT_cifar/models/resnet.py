@@ -99,7 +99,7 @@ class Bottleneck(nn.Module):
 
 class ResNet(nn.Module):
 
-    def __init__(self, block, layers, num_classes=1000):
+    def __init__(self, block, layers, num_classes=10):
         self.inplanes = 64
         super(ResNet, self).__init__()
         self.layers = layers
