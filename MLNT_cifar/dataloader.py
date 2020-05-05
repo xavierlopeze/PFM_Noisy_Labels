@@ -1,3 +1,21 @@
+dataloader.py
+Today
+9:22 PM
+X
+You edited an item
+Text
+dataloader.py
+Last week
+Fri 9:21 PM
+X
+You edited an item
+Text
+dataloader.py
+Fri 8:32 PM
+X
+You uploaded an item
+Text
+dataloader.py
 from torch.utils.data import Dataset, DataLoader
 import torchvision.transforms as transforms
 from PIL import Image
@@ -14,7 +32,7 @@ class KeyDataset(Dataset):
         self.test_labels = {}
         self.transform = transform
         self.mode = mode
-        with open(config.data_dir + 'clean_train_key_list.txt', 'r') as f:
+        with open(config.data_dir + config.train_dir, 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
             img_path = config.data_dir + l[7:]

@@ -9,14 +9,14 @@ pretrained = False
 seed = 7
 lr = 0.2
 optimizer_type = 'SGD'
-checkpoint = 'cross_entropy_r50_ResNet34_BasicBlock'
-noise_rate = 0.5
+checkpoint = 'cross_entropy_r10_ResNet34_BasicBlock'
+noise_rate = 0.1
 momentum = 0.9
 weight_decay = 0.0001
 
 # Hyper-params. (main)
 # -------------------------------------------- #
-id = 'MLNT_r50_ResNet34_BasicBlock'
+id = 'MLNT_r10_ResNet34_BasicBlock'
 meta_lr = 0.4  # meta learning_rate
 num_fast = 10  # number of random perturbations
 perturb_ratio = 0.5  # ratio of random perturbations
@@ -41,6 +41,8 @@ data_dir =  '/content/drive/My Drive/Colab_Notebooks/git/PFM_Noisy_Labels/MLNT_c
 
 #----------------------------------------------#
 #Dataloader files
+train_dir = 'clean_train_key_list.txt' #directories file for train, used in discarding
+
 train_file = 'noisy_label_kv.txt'
 valid_test_file = 'clean_label_kv.txt'
 
