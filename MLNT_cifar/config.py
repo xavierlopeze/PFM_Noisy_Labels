@@ -9,14 +9,14 @@ pretrained = False
 seed = 7
 lr = 0.2
 optimizer_type = 'SGD'
-checkpoint = 'cross_entropy_r10_ResNet34_BasicBlock'
-noise_rate = 0.1
+checkpoint = 'cross_entropy_r20_ResNet34_BasicBlock_assym'
+noise_rate = 0.2
 momentum = 0.9
 weight_decay = 0.0001
 
 # Hyper-params. (main)
 # -------------------------------------------- #
-id = 'MLNT_r10_ResNet34_BasicBlock'
+id = 'MLNT_r20_ResNet34_BasicBlock_assym'
 meta_lr = 0.4  # meta learning_rate
 num_fast = 10  # number of random perturbations
 perturb_ratio = 0.5  # ratio of random perturbations
@@ -74,7 +74,7 @@ noise_validation = False
 
 import noise_generator
 N_CLASSES = 10 #Depends on the dataset (10 for cifar)s
-symmetric = True
+symmetric = False
 train_file_name = 'noisy_label_kv.txt'
 test_file_name =  'noisy_label_validation.txt' #never name this 'clean_label_kv.txt'
 

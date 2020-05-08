@@ -1,3 +1,27 @@
+noise_generator.py
+Today
+11:26 PM
+X
+You edited an item
+Text
+noise_generator.py
+11:17 PM
+X
+You edited an item
+Text
+noise_generator.py
+Earlier this week
+Wed 10:58 PM
+X
+You edited an item
+Text
+noise_generator.py
+Last week
+May 1
+X
+You uploaded an item
+Text
+noise_generator.py
 import pandas as pd
 import numpy as np
 import random
@@ -85,5 +109,53 @@ def generate_noise(r,  symmetric = False, datadir = 'data/', train_file_name = "
             df_export = val_df[["directory","class_number"]].append(test_df)[["directory", "class_number"]]
 
             #generate file with noisy labels on test
-            df_export.to_csv(clean_kv, sep=' ', index=False,header = False)
+            df_export.to_csv(datadir + test_file_name, sep=' ', index=False,header = False)
             print("\nnoise file " + test_file_name + " generated with noise: " + str(r)+"\n")
+
+
+
+    else: #symmetric == False
+
+      #GENERATE ASYMMETRIC NOISE ON TRAIN DATASET:
+
+      #read data of mappings
+      df = pd.read_csv(datadir+"/image_set_mapping.csv",usecols = ["directory", "class_number","set"])
+      #get only the train data
+      df_train = df[df.set == "train"].copy()
+
+      #generate a list of noisy class (depending on the dictionary)
+      # classes = ["airplane","automobile", "bird", "cat", "deer", "dog","frog","horse","ship","truck"]
+      #truck->automobile - 9:1
+      #bird->airplane - 2:0
+      #deer->horse - 4:7
+      #cat<->dog 3:5 5:3
+
+      d = {9:1,2:0,3:5, 5:3}
+
+      def assymetric_noise(label, d):
+        if label in d.keys():
+          return d[label]
+        return label
+      #generate a column with the mapped assymmetric noise class if it has one
+      df_train["noisy_class"] = [assymetric_noise(label,d) for label in df_train.class_number]
+
+      #column of probabilities (uniform)
+      df_train["p"] = np.random.uniform(0,1,df_train.shape[0])
+
+      #use the random list to generate noise in effective percentage r
+      set_classes = set(df_train.class_number)
+      N_CLASSES = len(set_classes)
+      NOISE_PERCENTAGE = r
+      noisy_class = []
+      for index, row in df_train.iterrows():
+          if row["p"]<= NOISE_PERCENTAGE:
+              noisy_class.append( row["noisy_class"])
+          else:
+              noisy_class.append(row["class_number"])
+
+      df_train["noisy_class"] = noisy_class
+      clean_kv = datadir + train_file_name
+      # clean_kv = "/content/drive/My Drive/Colab_Notebooks/pfm/data/asdf.txt"
+      df_train[["directory", "noisy_class"]].to_csv(clean_kv, sep=' ', index=False,header = False)
+      print("\nnoise file " + train_file_name + " generated with noise: " + str(r)+"\n")
+      # return(df_train[["directory", "noisy_class"]])
