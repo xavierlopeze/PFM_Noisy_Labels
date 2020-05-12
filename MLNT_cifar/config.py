@@ -9,14 +9,14 @@ pretrained = False
 seed = 7
 lr = 0.2
 optimizer_type = 'SGD'
-checkpoint = 'cross_entropy_r20_ResNet34_BasicBlock_assym'
-noise_rate = 0.2
+checkpoint = 'cross_entropy_r40_ResNet34_BasicBlock_assym'
+noise_rate = 0.4
 momentum = 0.9
 weight_decay = 0.0001
 
 # Hyper-params. (main)
 # -------------------------------------------- #
-id = 'MLNT_r20_ResNet34_BasicBlock_assym'
+id = 'MLNT_r40_ResNet34_BasicBlock_assym'
 meta_lr = 0.4  # meta learning_rate
 num_fast = 10  # number of random perturbations
 perturb_ratio = 0.5  # ratio of random perturbations
@@ -43,7 +43,7 @@ data_dir =  '/content/drive/My Drive/Colab_Notebooks/git/PFM_Noisy_Labels/MLNT_c
 #Dataloader files
 train_dir = 'clean_train_key_list.txt' #directories file for train, used in discarding
 
-train_file = 'noisy_label_kv.txt'
+train_file = 'noisy_label_kv' +str(noise_rate*100)+ '.txt'
 valid_test_file = 'clean_label_kv.txt'
 
 # Choose a network
@@ -63,20 +63,20 @@ use_wandb = True
 
 
 #Label FILES
-train_labels_file = 'noisy_label_kv.txt'
+train_labels_file = 'noisy_label_kv' +str(int(noise_rate)*100)+ '.txt'
 test_validation_labels_file = 'clean_label_kv.txt'
 
 
 #GENERATE NOISE FILES
 generate_file = True
-noise_validation = False
+noise_validation = True
 
 
 import noise_generator
 N_CLASSES = 10 #Depends on the dataset (10 for cifar)s
 symmetric = False
-train_file_name = 'noisy_label_kv.txt'
-test_file_name =  'noisy_label_validation.txt' #never name this 'clean_label_kv.txt'
+train_file_name = 'noisy_label_kv' +str(int(noise_rate)*100)+ '.txt'
+test_file_name =  'noisy_label_validation +str(int(noise_rate)*100)+ '.txt' #never name this 'clean_label_kv.txt'
 
 if noise_validation == True:
     test_validation_labels_file = test_file_name
