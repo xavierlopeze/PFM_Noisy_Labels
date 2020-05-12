@@ -69,14 +69,14 @@ test_validation_labels_file = 'clean_label_kv.txt'
 
 #GENERATE NOISE FILES
 generate_file = True
-noise_validation = True
+noise_validation = False
 
 
 import noise_generator
 N_CLASSES = 10 #Depends on the dataset (10 for cifar)s
 symmetric = False
 train_file_name = 'noisy_label_kv' +str(int(noise_rate)*100)+ '.txt'
-test_file_name =  'noisy_label_validation +str(int(noise_rate)*100)+ '.txt' #never name this 'clean_label_kv.txt'
+test_file_name =  'noisy_label_validation' +str(int(noise_rate)*100)+ '.txt'
 
 if noise_validation == True:
     test_validation_labels_file = test_file_name
