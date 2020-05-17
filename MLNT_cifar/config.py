@@ -1,3 +1,24 @@
+# Most frequently modified parameters
+# -------------------------------------------- #
+# 
+noise_rate = 0.5
+symmetric = True
+noise_validation = False
+
+
+if symmetric == True:
+    str_sym = "sim"
+else:
+    str_sym = 'asym'
+
+if noise_validation == True:
+    str_noiseval = "_noise_validatin"
+else:
+    str_noiseval = ""
+
+checkpoint = 'cross_entropy_r' + str(int(100*noise_rate)) + '_ResNet34_' + str_sym + str_noiseval
+id = 'MLNT_r' + str(int(100*noise_rate)) + '_ResNet34_' + str_sym + str_noiseval
+
 # Hyper-params. (baseline)
 # -------------------------------------------- #
 num_workers = 10
@@ -9,14 +30,11 @@ pretrained = False
 seed = 7
 lr = 0.2
 optimizer_type = 'SGD'
-checkpoint = 'cross_entropy_r40_ResNet34_BasicBlock_assym'
-noise_rate = 0.4
 momentum = 0.9
 weight_decay = 0.0001
 
 # Hyper-params. (main)
 # -------------------------------------------- #
-id = 'MLNT_r40_ResNet34_BasicBlock_assym'
 meta_lr = 0.4  # meta learning_rate
 num_fast = 10  # number of random perturbations
 perturb_ratio = 0.5  # ratio of random perturbations
@@ -63,20 +81,18 @@ use_wandb = True
 
 
 #Label FILES
-train_labels_file = 'noisy_label_kv' +str(int(noise_rate)*100)+ '.txt'
+train_labels_file = 'noisy_label_kv' +str(int(noise_rate*100))+ '.txt'
 test_validation_labels_file = 'clean_label_kv.txt'
 
 
 #GENERATE NOISE FILES
 generate_file = True
-noise_validation = False
 
 
 import noise_generator
 N_CLASSES = 10 #Depends on the dataset (10 for cifar)s
-symmetric = False
-train_file_name = 'noisy_label_kv' +str(int(noise_rate)*100)+ '.txt'
-test_file_name =  'noisy_label_validation' +str(int(noise_rate)*100)+ '.txt'
+train_file_name = 'noisy_label_kv' +str(int(noise_rate*100))+ '.txt'
+test_file_name =  'noisy_label_validation' +str(int(noise_rate*100))+ '.txt'
 
 if noise_validation == True:
     test_validation_labels_file = test_file_name
@@ -88,7 +104,7 @@ if generate_file == True:
 if use_wandb== True:
     import wandb
 
-    project_name = "Cifar_Experiment"
+    project_name = "Cifar_Noise"
 
     args = {"num_workers": num_workers,
             "start_epoch":start_epoch,

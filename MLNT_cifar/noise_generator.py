@@ -2,10 +2,13 @@ import pandas as pd
 import numpy as np
 import random
 
-random.seed( 30 )
+
 
 def generate_noise(r,  symmetric = False, datadir = 'data/', train_file_name = "noisy_label_kv.txt", noise_validation = False,test_file_name = "noisy_validation.txt"):
-
+    
+    random.seed(0)
+    np.random.seed(0)
+    
     if symmetric == True:
 
         #GENERATE NOISE ON TRAIN DATASET:
