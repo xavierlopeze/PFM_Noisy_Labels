@@ -3,12 +3,6 @@ from torch import nn
 from torch.nn import functional as F
 
 
-def normal_init(m, mean, std):
-    if isinstance(m, nn.ConvTranspose2d) or isinstance(m, nn.Conv2d):
-        m.weight.data.normal_(mean, std)
-        m.bias.data.zero_()
-
-
 class AdaptiveVAE(nn.Module):
     def __init__(self, nc=3, img=32, hid_size=100, ker=3, strides=(2, 2, 2),
                  leaky=(1, 1)):
@@ -93,10 +87,6 @@ class AdaptiveVAE(nn.Module):
         mu, logvar = self.encode(x)
         z = self.reparameterize(mu, logvar)
         return self.decode(z), mu, logvar
-
-    def weight_init(self, mean, std):
-        for m in self._modules:
-            normal_init(self._modules[m], mean, std)
 
 
 
