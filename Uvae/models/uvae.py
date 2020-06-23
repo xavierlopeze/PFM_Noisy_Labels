@@ -1,10 +1,29 @@
+# ==============================================================================
+#
+# (encoder: ResNet) + (latent_variable: N(0,1)) + (decoder)
+#                   + (classifier: Softmax)
+#
+# ==============================================================================
+
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
-from resnet import conv3x3, conv1x1, resnet34
+from models import resnet34
 
 
 __all__ = ['DecoderBasicBlock', 'Decoder', 'UVae']
+
+
+def conv3x3(in_planes, out_planes, stride=1, groups=1, dilation=1):
+    """3x3 convolution with padding"""
+    return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
+                     padding=dilation, groups=groups, bias=True, dilation=dilation)
+
+
+def normal_init(m, mean, std):
+    if isinstance(m, nn.Conv2d):
+        m.weight.data.normal_(mean, std)
+        m.bias.data.zero_()
 
 
 class DecoderBasicBlock(nn.Module):
@@ -79,6 +98,11 @@ class Decoder(nn.Module):
 
         return torch.sigmoid(z)
 
+    def weight_init(self, mean, std):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                normal_init(m, mean, std)
+
 
 class UVae(nn.Module):
     out_planes = 512
@@ -93,17 +117,20 @@ class UVae(nn.Module):
         self._encoder = encoder
 
         # Latent variable
-        self.fc1 = nn.Linear(self.out_planes * 8 * 8, latent_variable_size)
-        self.fc2 = nn.Linear(self.out_planes * 8 * 8, latent_variable_size)
+        # self.fc1 = nn.Linear(self.out_planes * encoder.expansion * 8 * 8,
+        #                      latent_variable_size)
+        # self.fc2 = nn.Linear(self.out_planes * encoder.expansion * 8 * 8,
+        #                      latent_variable_size)
 
         # Classifier
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc3 = nn.Linear(self.out_planes, num_classes)
+        self.fc3 = nn.Linear(self.out_planes * encoder.expansion,
+                             num_classes)
 
         # Decoder
-        self.fc4 = nn.Linear(latent_variable_size, self.out_planes * 8 * 8)
-        if decoder is None:
-            decoder = Decoder(DecoderBasicBlock)
+        # self.fc4 = nn.Linear(latent_variable_size, self.out_planes * 8 * 8)
+        # if decoder is None:
+        #    decoder = Decoder(DecoderBasicBlock)
         self._decoder = decoder
 
     def encode(self, x):
@@ -130,11 +157,12 @@ class UVae(nn.Module):
 
         return z
 
-    def forward(self, x, inference=False):
+    def forward(self, x, inference=True):
         # Encoder without latent var.
         x = self.encode(x)
         # Classifier
         out = self.classify(x)
+
         if inference:
             return out
         # Latent variable
