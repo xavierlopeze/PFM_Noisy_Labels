@@ -105,7 +105,6 @@ class Decoder(nn.Module):
 
 
 class UVae(nn.Module):
-    out_planes = 512
 
     def __init__(self, encoder=None, decoder=None, num_classes=1000,
                  latent_variable_size=500, **kwargs):
@@ -117,21 +116,19 @@ class UVae(nn.Module):
         self._encoder = encoder
 
         # Latent variable
-        # self.fc1 = nn.Linear(self.out_planes * encoder.expansion * 8 * 8,
-        #                      latent_variable_size)
-        # self.fc2 = nn.Linear(self.out_planes * encoder.expansion * 8 * 8,
-        #                      latent_variable_size)
+        intermediate_size = 512 * encoder.expansion * 7 * 7
+        # self.fc1 = nn.Linear(intermediate_size, latent_variable_size)
+        # self.fc2 = nn.Linear(intermediate_size, latent_variable_size)
 
         # Classifier
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc3 = nn.Linear(self.out_planes * encoder.expansion,
-                             num_classes)
+        self.fc3 = nn.Linear(512 * encoder.expansion, num_classes)
 
         # Decoder
-        # self.fc4 = nn.Linear(latent_variable_size, self.out_planes * 8 * 8)
+        # self.fc4 = nn.Linear(latent_variable_size, intermediate_size)
         # if decoder is None:
-        #    decoder = Decoder(DecoderBasicBlock)
-        self._decoder = decoder
+        #     decoder = Decoder(DecoderBasicBlock)
+        # self._decoder = decoder
 
     def encode(self, x):
         return self._encoder(x)
@@ -152,7 +149,7 @@ class UVae(nn.Module):
 
     def decode(self, z):
         z = F.relu(self.fc4(z))
-        z = z.view(z.size(0), -1, 8, 8)
+        z = z.view(z.size(0), -1, 7, 7)
         z = self._decoder(z)
 
         return z
@@ -162,9 +159,8 @@ class UVae(nn.Module):
         x = self.encode(x)
         # Classifier
         out = self.classify(x)
-
         if inference:
-            return out
+            return out, None, None, None
         # Latent variable
         x = torch.flatten(x, 1)
         mu, logvar = self.fc1(x), self.fc2(x)

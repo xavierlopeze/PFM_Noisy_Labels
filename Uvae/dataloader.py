@@ -7,11 +7,7 @@ __all__ = ['KeyDataLoader']
 
 
 class KeyDataset(Dataset):
-    def __init__(self, transform, mode, data_dir='./data/'):
-
-        # Config inputs
-        # data_dir = config.data_dir
-
+    def __init__(self, transform, mode, data_dir='./data'):
         self.train_imgs = []
         self.valid_imgs = []
         self.test_imgs = []
@@ -20,36 +16,36 @@ class KeyDataset(Dataset):
         self.test_labels = {}
         self.transform = transform
         self.mode = mode
-        with open(data_dir + 'clean_train_key_list.txt', 'r') as f:
+        with open(data_dir + '/clean_train_key_list.txt', 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
-            img_path = data_dir + l[1:]
+            img_path = data_dir + l
             self.train_imgs.append(img_path)
 
-        with open(data_dir + 'clean_test_key_list.txt', 'r') as f:
+        with open(data_dir + '/clean_test_key_list.txt', 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
-            img_path = data_dir + l[1:]
+            img_path = data_dir + l
             self.test_imgs.append(img_path)
 
-        with open(data_dir + 'clean_val_key_list.txt', 'r') as f:
+        with open(data_dir + '/clean_val_key_list.txt', 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
-            img_path = data_dir + l[1:]
+            img_path = data_dir + l
             self.valid_imgs.append(img_path)
 
-        with open(data_dir + 'noisy_label_kv.txt', 'r') as f:
+        with open(data_dir + '/clean_label_kv.txt', 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
             entry = l.split()
-            img_path = data_dir + entry[0][1:]
+            img_path = data_dir + entry[0]
             self.train_labels[img_path] = int(entry[1])
 
-        with open(data_dir + 'clean_label_kv.txt', 'r') as f:
+        with open(data_dir + '/clean_label_kv.txt', 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
             entry = l.split()
-            img_path = data_dir + entry[0][1:]
+            img_path = data_dir + entry[0]
             self.test_labels[img_path] = int(entry[1])
 
     def __getitem__(self, index):
@@ -81,7 +77,7 @@ class KeyDataset(Dataset):
 
 
 class KeyDataLoader(object):
-    def __init__(self, image_size=256, crop=32):
+    def __init__(self, image_size=224, crop=32):
 
         if image_size >= 128:
             mean = (0.485, 0.456, 0.406)
@@ -91,16 +87,20 @@ class KeyDataLoader(object):
             std = (0.2023, 0.1994, 0.2010)
 
         self.transform_train = transforms.Compose([
-            transforms.RandomCrop(image_size, crop),
-            transforms.RandomHorizontalFlip(),
+            # transforms.RandomCrop(image_size, crop),
+            # transforms.RandomHorizontalFlip(),
+            transforms.Resize(image_size + crop),
+            transforms.CenterCrop(image_size),
             transforms.ToTensor(),
-            transforms.Normalize(mean, std),
+            # transforms.Normalize(mean, std),
         ])
 
         self.transform_test = transforms.Compose([
-            transforms.RandomCrop(image_size, crop),
+            # transforms.RandomCrop(image_size, crop),
+            transforms.Resize(image_size + crop),
+            transforms.CenterCrop(image_size),
             transforms.ToTensor(),
-            transforms.Normalize(mean, std),
+            # transforms.Normalize(mean, std),
         ])
 
     def run(self, batch_size=32, num_workers=1, **kwargs):
