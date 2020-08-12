@@ -7,13 +7,14 @@
 from torch.utils.data import Dataset, DataLoader
 import torchvision.transforms as transforms
 from PIL import Image
+import config
 
 
 __all__ = ['KeyDataLoader']
 
 
 class KeyDataset(Dataset):
-    def __init__(self, transform, mode, data_dir='./data'):
+    def __init__(self, transform, mode):
         self.train_imgs = []
         self.valid_imgs = []
         self.test_imgs = []
@@ -22,36 +23,36 @@ class KeyDataset(Dataset):
         self.test_labels = {}
         self.transform = transform
         self.mode = mode
-        with open(data_dir + '/clean_train_key_list.txt', 'r') as f:
+        with open(config.data_dir + config.train_dir, 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
-            img_path = data_dir + l
+            img_path = config.data_dir + l
             self.train_imgs.append(img_path)
 
-        with open(data_dir + '/clean_test_key_list.txt', 'r') as f:
+        with open(config.data_dir + 'clean_test_key_list.txt', 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
-            img_path = data_dir + l
+            img_path = config.data_dir + l
             self.test_imgs.append(img_path)
 
-        with open(data_dir + '/clean_val_key_list.txt', 'r') as f:
+        with open(config.data_dir + 'clean_val_key_list.txt', 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
-            img_path = data_dir + l
+            img_path = config.data_dir + l
             self.valid_imgs.append(img_path)
 
-        with open(data_dir + '/clean_label_kv.txt', 'r') as f:
+        with open(config.data_dir + config.train_labels_file, 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
             entry = l.split()
-            img_path = data_dir + entry[0]
+            img_path = config.data_dir + entry[0]
             self.train_labels[img_path] = int(entry[1])
 
-        with open(data_dir + '/clean_label_kv.txt', 'r') as f:
+        with open(config.data_dir + config.valid_test_file, 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
             entry = l.split()
-            img_path = data_dir + entry[0]
+            img_path = config.data_dir + entry[0]
             self.test_labels[img_path] = int(entry[1])
 
     def __getitem__(self, index):
