@@ -26,33 +26,33 @@ class KeyDataset(Dataset):
         with open(config.data_dir + config.train_dir, 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
-            img_path = config.data_dir + l
+            img_path = config.data_dir + l[1:]
             self.train_imgs.append(img_path)
 
         with open(config.data_dir + 'clean_test_key_list.txt', 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
-            img_path = config.data_dir + l
+            img_path = config.data_dir + 'images/' + l + '.jpg'
             self.test_imgs.append(img_path)
 
         with open(config.data_dir + 'clean_val_key_list.txt', 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
-            img_path = config.data_dir + l
+            img_path = config.data_dir + l[1:]
             self.valid_imgs.append(img_path)
 
         with open(config.data_dir + config.train_labels_file, 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
             entry = l.split()
-            img_path = config.data_dir + entry[0]
+            img_path = config.data_dir + entry[0][1:]
             self.train_labels[img_path] = int(entry[1])
 
         with open(config.data_dir + config.valid_test_file, 'r') as f:
             lines = f.read().splitlines()
         for l in lines:
             entry = l.split()
-            img_path = config.data_dir + entry[0]
+            img_path = config.data_dir + entry[0][1:]
             self.test_labels[img_path] = int(entry[1])
 
     def __getitem__(self, index):
