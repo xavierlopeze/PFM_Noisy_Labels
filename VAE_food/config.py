@@ -11,7 +11,7 @@ import random
 use_wandb = True
 noise_generator =  True
 noise_validation = True
-r = 0.7 #noise noise_rate
+r = 0 #noise noise_rate
 generate_logs = True
 batch_size = 64
 start_iter = 500 #500
@@ -37,7 +37,7 @@ vae = True
 
 checkpoint = 'cross_entropy'
 
-id = 'MLNT'
+id = 'MLNT_normalization'
 
 if noise_generator == True:
     checkpoint = checkpoint + '_sim_noise_' + str(int(100*r))

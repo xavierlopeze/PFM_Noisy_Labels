@@ -14,7 +14,7 @@ __all__ = ['KeyDataLoader']
 
 
 class KeyDataset(Dataset):
-    def __init__(self, transform, mode):
+    def __init__(self, transform, mode, transform2 = None):
         self.train_imgs = []
         self.valid_imgs = []
         self.test_imgs = []
@@ -22,6 +22,7 @@ class KeyDataset(Dataset):
         self.valid_labels = {}
         self.test_labels = {}
         self.transform = transform
+        self.transform2 = transform2
         self.mode = mode
         with open(config.data_dir + config.train_dir, 'r') as f:
             lines = f.read().splitlines()
@@ -69,8 +70,11 @@ class KeyDataset(Dataset):
             raise Exception('%s not allowed'.format(self.mode))
         image = Image.open(img_path).convert('RGB')
         img = self.transform(image)
+        
+        if self.transform2 is not None:
+            return img, self.transform2(image), target
 
-        return img, target
+        return img, target, img_path
 
     def __len__(self):
         if self.mode == 'train':
@@ -92,6 +96,15 @@ class KeyDataLoader(object):
             transforms.Resize(image_size + crop),
             transforms.CenterCrop(image_size),
             transforms.ToTensor(),
+            transforms.Normalize((0.485, 0.456, 0.406),(0.229, 0.224, 0.225)),
+        ])
+
+        self.transform_vae = transforms.Compose([
+            # transforms.RandomCrop(image_size, crop),
+            # transforms.RandomHorizontalFlip(),
+            transforms.Resize(image_size + crop),
+            transforms.CenterCrop(image_size),
+            transforms.ToTensor(),
         ])
 
         self.transform_test = transforms.Compose([
@@ -99,24 +112,26 @@ class KeyDataLoader(object):
             transforms.Resize(image_size + crop),
             transforms.CenterCrop(image_size),
             transforms.ToTensor(),
+            transforms.Normalize((0.485, 0.456, 0.406),(0.229, 0.224, 0.225)),
         ])
 
-    def run(self, batch_size=32, num_workers=1, **kwargs):
+    def run(self, batch_size=32, num_workers=1):
 
         train_loader = DataLoader(dataset=KeyDataset(transform=self.transform_train,
-                                                     mode='train', **kwargs),
+                                                     mode='train', transform2 = self.transform_vae),
                                   batch_size=batch_size,
                                   shuffle=True,
                                   num_workers=num_workers)
         valid_loader = DataLoader(dataset=KeyDataset(transform=self.transform_test,
-                                                     mode='valid', **kwargs),
+                                                     mode='valid'),
                                   batch_size=batch_size,
                                   shuffle=False,
                                   num_workers=num_workers)
         test_loader = DataLoader(dataset=KeyDataset(transform=self.transform_test,
-                                                    mode='test', **kwargs),
+                                                    mode='test'),
                                  batch_size=batch_size,
                                  shuffle=False,
                                  num_workers=num_workers)
+                                 
 
         return train_loader, valid_loader, test_loader
