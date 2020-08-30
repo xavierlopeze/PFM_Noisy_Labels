@@ -11,4 +11,5 @@ To use the code, please cite our paper.
 
 The aim of the adaptation is to enable the original code to work on the Cifar-10 dataset instead of the Clothing1M.  
 
-The main differences are importing a resnet32 and adapting the model to enable an optimum synthethic label generation.
+The main differences are importing a resnet-32 and adapting the model to enable an optimum synthethic label generation.
+However we take care of every detail as generating noise, visualizing the results and setting a config.py file with the hyper-parameters.
