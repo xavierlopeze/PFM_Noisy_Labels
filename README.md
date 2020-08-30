@@ -7,7 +7,7 @@ We particulary focus on MLNT and VAEs.
 Our results suggest that on datasets with and without noisy labels MLNT is able to consistently outperform a conventional cross-entropy learning approach on different kinds of noise.
 
 
-### Training Techniques
+### Noisy label training methods:
 * [MLNT](https://github.com/LiJunnan1992/MLNT)
 
 ### Datsets:
