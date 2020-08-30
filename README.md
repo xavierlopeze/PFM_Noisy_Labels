@@ -4,7 +4,7 @@ This repository is the result of a final Master's Thesis of the Master's Degree 
 In this thesis we explore techniques to make Deep Learning robust on noisy datasets. With noisy datasets we mean datasets that contain samples wrongly labeled. We will work on  supervised classification problems of mutually exclusive classes (i.e. without overlap). We tackle computer vision problems, although those techniques are model-agnostic and can be implmeneted on a general classification task.
 We particulary focus on MLNT and VAEs.
 
-Our results suggest that over datasets with noisy labels MLNT is able to consistently outperform a conventional cross-entropy learning approach.
+Our results suggest that on datasets with and without noisy labels MLNT is able to consistently outperform a conventional cross-entropy learning approach.
 
 
 ### Deep Learning with noisy labels methods
