@@ -10,6 +10,10 @@ Our results suggest that on datasets with and without noisy labels MLNT is able 
 ### Noisy label training methods:
 * [MLNT](https://github.com/LiJunnan1992/MLNT)
 
+### Implementation
+* Entire code is in Python 3
+* The deep learning models we use are done in [Pytorch](https://pytorch.org/) used are ResNet-34 and ResNet-50 avaiable in [torchvision](https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py)
+
 ### Datsets:
 * [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html)
 * [Food-101](https://www.kaggle.com/dansbecker/food-101/home)
