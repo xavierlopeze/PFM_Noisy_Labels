@@ -12,7 +12,8 @@ Our results suggest that on datasets with and without noisy labels MLNT is able 
 
 ### Implementation
 * Entire code is in Python 3
-* The core deep learning library used is [Pytorch](https://pytorch.org/), the  models we use are are ResNet-34 and ResNet-50 avaiable in [torchvision](https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py)
+* The core deep learning library used is [Pytorch](https://pytorch.org/)
+* The  models we use are are ResNet-34 and ResNet-50 avaiable in [torchvision](https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py)
 
 ### Datsets:
 * [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html)
